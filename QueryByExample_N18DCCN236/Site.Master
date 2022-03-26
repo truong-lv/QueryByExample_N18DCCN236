@@ -6,7 +6,7 @@
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%: Page.Title %> QUERY BY EX</title>
+    <title><%: Page.Title %> QUERY BY EXAMPLE</title>
 
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
@@ -34,6 +34,8 @@
                 <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
                 <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
                 <asp:ScriptReference Name="WebFormsBundle" />
+
+                
                 <%--Site Scripts--%>
             </Scripts>
         </asp:ScriptManager>
@@ -60,11 +62,17 @@
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
             <hr />
-            <footer>
+            
+        </div>
+        <div class="navbar navbar-light" style="background-color: #e3f2fd;">
+            <div class="container">
+                <footer >
                 <p>&copy; <%: DateTime.Now.Year %> - N18DCCN236_Lù Vĩnh Trường</p>
             </footer>
+                </div>
         </div>
-
     </form>
+    <script type="text/javascript" src="./Scripts/myTools/SaveScroll.js" ></script>
+    <%--<script type="text/javascript" src="./Scripts/myTools/ClearnDXNotification.js" ></script>--%>
 </body>
 </html>
