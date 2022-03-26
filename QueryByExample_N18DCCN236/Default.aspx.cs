@@ -20,13 +20,17 @@ namespace QueryByExample_N18DCCN236
         public static List<String> listTableNameTemp1 = new List<string>();
         public static List<String> listColumnNameTemp2 = new List<string>();
         public static List<String> listTableNameTemp2 = new List<string>();
-
+        public static DataTable dt = new DataTable();
         protected void Page_Load(object sender, EventArgs e)
         {
             
             if (!IsPostBack)
             {
                 this.GetTable();
+                
+
+                dt.Columns.Add("Tên Cột", Type.GetType("System.String"));
+                dt.Columns.Add("Tên Bảng", Type.GetType("System.String"));
             }
             
         }
@@ -94,6 +98,7 @@ namespace QueryByExample_N18DCCN236
         }
         protected void ASPxTreeView1_CheckedChanged(object source, TreeViewNodeEventArgs e)
         {
+            // NODES TABLE
             if (e.Node.Parent.Parent==null)
             {
                 if (!e.Node.Checked)
@@ -106,12 +111,37 @@ namespace QueryByExample_N18DCCN236
                 }
                 CheckBoxListTable_SelectedIndexChanged();
             }
-            else
+            else//NODES COLUMN
             {
                 if (!e.Node.Parent.Checked)
                 {
                     e.Node.Parent.Checked = true;
                     CheckBoxListTable_SelectedIndexChanged();
+                }
+                if (e.Node.Checked)
+                {
+                    dt.Rows.Add();
+                    dt.Rows[dt.Rows.Count-1]["Tên Cột"] = e.Node.Text.ToString();
+                    dt.Rows[dt.Rows.Count-1]["Tên Bảng"] = e.Node.Name.ToString();
+
+                    GridView1.DataSource = dt;
+                    GridView1.DataBind();
+                }
+                else
+                {
+                    String tenCot="", tenBang="";
+                   
+                    for(int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        tenCot=dt.Rows[i]["Tên Cột"].ToString();
+                        tenBang=dt.Rows[i]["Tên Bảng"].ToString();
+                        if (tenCot.Equals(e.Node.Text.ToString()) && tenBang.Equals(e.Node.Name.ToString()))
+                        {
+                            dt.Rows.RemoveAt(i);
+                        }
+                    }
+                    GridView1.DataSource = dt;
+                    GridView1.DataBind();
                 }
                 CheckBoxListColumn_SelectedIndexChanged();
             }
@@ -159,25 +189,7 @@ namespace QueryByExample_N18DCCN236
                 }
             });
             
-            DataTable dt = new DataTable();
-
-            dt.Columns.Add("TenCot", Type.GetType("System.String"));
-            dt.Columns.Add("TenBang", Type.GetType("System.String"));
-
-            string[] arrTemp1 = listColumnNameTemp1.ToArray();
-            string[] arrTemp2 = listTableNameTemp1.ToArray();
-
-            for (int i = 0; i < arrTemp1.GetLength(0); i++)
-            {
-                dt.Rows.Add();
-                dt.Rows[i]["TenCot"] = arrTemp1[i];
-                dt.Rows[i]["TenBang"] = arrTemp2[i];
-            }
-            listColumnNameTemp1.Clear();
-            listTableNameTemp1.Clear();
-
-            GridView1.DataSource = dt;
-            GridView1.DataBind();
+            
 
 
         }
@@ -195,6 +207,8 @@ namespace QueryByExample_N18DCCN236
                 TextBox strBang = new TextBox();
                 TextBox strCot = new TextBox();
                 TextBox dieuKien = (TextBox)GridView1.Rows[i].Cells[2].FindControl("TextBoxDieuKien");
+                CheckBox check = (CheckBox)GridView1.Rows[i].Cells[0].FindControl("ColumnChecked");
+                DropDownList state = (DropDownList)GridView1.Rows[i].Cells[1].FindControl("DropDownList1");
                 if (dieuKien.Text.ToString() != "")
                 {
                     strBang.Text = GridView1.Rows[i].Cells[4].Text;
@@ -209,14 +223,21 @@ namespace QueryByExample_N18DCCN236
 
                 columnName = strBang.Text.ToString() + "." + strCot.Text.ToString();
 
-                if (i < GridView1.Rows.Count - 1)
+                
+                if (check.Checked)
                 {
-                    columnName += ", ";
+                    mess += columnName+", ";
                 }
-                mess += columnName;
+                
 
             }
-
+            mess = mess.Substring(0, mess.Length - 2);
+            bool debug = (mess == "SELEC");
+            if(mess== "SELEC")
+            {
+                txtQuery.Text = "";
+                return;
+            }
             String where = "";
             int w = 0;
             for (int i = 0; i < listColumnNameTemp2.Count - 1; i++)
@@ -262,6 +283,11 @@ namespace QueryByExample_N18DCCN236
             PerformActionOnNodesRecursive(ASPxTreeView1.Nodes, delegate (TreeViewNode node) { node.Checked = false; });
             CheckBoxListTable_SelectedIndexChanged();
             CheckBoxListColumn_SelectedIndexChanged();
+        }
+
+        protected void Checked_OnChanged(object sender, EventArgs e)
+        {
+            btnCreateQuery_Click(sender, e);
         }
     }
 }

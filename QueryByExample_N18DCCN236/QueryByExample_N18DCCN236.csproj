@@ -140,6 +140,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Image\icons8_database_daily_import_30px.png" />
+    <Content Include="App_Data\Image\icons8_database_daily_import_30px_2.png" />
     <Content Include="App_Data\Image\icons8_hand_with_pen_25px.png" />
     <Content Include="Content\AppStyle.css" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -148,7 +150,6 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Default.aspx" />
-    <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -160,6 +161,7 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="favicon.ico" />
     <Content Include="MyReport.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

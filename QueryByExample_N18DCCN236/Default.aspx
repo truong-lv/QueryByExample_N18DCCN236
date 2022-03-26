@@ -8,7 +8,7 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="row">
        <div style="display:flex; justify-content:left;align-items:center;padding:15px 0">
-           <dx:ASPxLabel ID="ASPxLabel2" runat="server" Font-Bold="True" Font-Size="Medium" Text="TIÊU ĐỀ BÁO CÁO:" Theme="Office2010Black">
+           <dx:ASPxLabel ID="ASPxLabel2" runat="server" Font-Bold="False" Font-Size="Medium" Text="TIÊU ĐỀ BÁO CÁO:" Theme="Office2010Black">
            </dx:ASPxLabel>
            <dx:ASPxTextBox ID="txtTitle" runat="server" Width="30%" Font-Bold="True" Font-Names="Tahoma" Font-Size="Medium" Theme="Default">
            </dx:ASPxTextBox>
@@ -22,22 +22,24 @@
                 <asp:TextBox ID="txtQuery" runat="server" TextMode="MultiLine" MaxLength="400" Height="200px" Width="100%" ></asp:TextBox>
             </div>
             <div class="row">
-                <dx:ASPxButton ID="btnCreateQuery" runat="server" Font-Names="Tahoma" OnClick="btnCreateQuery_Click" Text="Tạo truy vấn" Theme="MaterialCompact">
-                    <Image IconID="dashboards_newdatasource_svg_white_16x16">
-                    </Image>
-                </dx:ASPxButton>
-                <dx:ASPxButton ID="btnReport" runat="server" OnClick="btnReport_Click" Text="Tạo Báo Cáo" Theme="Office365">
-                    <Image IconID="reports_showprintingwarnings_svg_white_16x16">
-                    </Image>
-                </dx:ASPxButton>
-                <asp:GridView ID="GridView1" runat="server" BackColor="White"  BorderColor="#CCCCCC"  BorderWidth="1px" CellPadding="3" Width="100%">
+                <div style="padding:5px;">
+                    <dx:ASPxButton ID="btnCreateQuery" runat="server" Font-Names="Tahoma" OnClick="btnCreateQuery_Click" Text="Tạo truy vấn" Theme="MaterialCompact">
+                        <Image IconID="dashboards_newdatasource_svg_white_16x16">
+                        </Image>
+                    </dx:ASPxButton>
+                    <dx:ASPxButton ID="btnReport" runat="server" OnClick="btnReport_Click" Text="Tạo Báo Cáo" Theme="Office365">
+                        <Image IconID="reports_showprintingwarnings_svg_white_16x16">
+                        </Image>
+                    </dx:ASPxButton>
+                </div>
+                <asp:GridView ID="GridView1" runat="server" BackColor="White"  BorderColor="#CCCCCC"  BorderWidth="1px" CellPadding="3" Width="100%" ClientIDMode="AutoID">
                 <Columns>
                     <asp:TemplateField>
                         <HeaderTemplate>
                             <asp:CheckBox ID="checkAll" runat="server" AutoPostBack="true" Text="Chọn tất cả"/>
                         </HeaderTemplate>
                             <ItemTemplate>
-                                <asp:CheckBox ID="ColumnChecked" runat="server"  /> <%--OnCheckedChanged="Checked_OnChanged"--%>
+                                <asp:CheckBox ID="ColumnChecked" runat="server" OnCheckedChanged="Checked_OnChanged" AutoPostBack="true"/>
                             </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="State" >
