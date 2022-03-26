@@ -26,7 +26,7 @@ namespace QueryByExample_N18DCCN236
             SqlConnection cnn = new SqlConnection();
             SqlCommand cmd = new SqlCommand();
 
-            String connect = ConfigurationManager.ConnectionStrings["DBstring"].ConnectionString; //"Data Source=LAPTOP-3HGQMJ9B;Initial Catalog=RyoStore;Integrated Security=True";
+            String connect = ConfigurationManager.ConnectionStrings["DBstring"].ConnectionString; 
             cnn.ConnectionString = connect;
             cnn.Open();
             DataSet dt = new DataSet();
@@ -63,12 +63,11 @@ namespace QueryByExample_N18DCCN236
         {
             ds = ((DataSet)rep.DataSource);
             int colCount = ds.Tables[0].Columns.Count;
-            int colWidth = (rep.PageWidth - (rep.Margins.Left + rep.Margins.Right)) / colCount;
             rep.Margins = new System.Drawing.Printing.Margins(20, 20, 20, 20);
             XRLabel title = new XRLabel();
             title.Text = tit;
             title.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
-            title.ForeColor = Color.Red;
+            title.ForeColor = Color.Blue;
             title.Font = new Font("Tahoma", 20, FontStyle.Bold, GraphicsUnit.Pixel);
             title.Width = Convert.ToInt32(rep.PageWidth - 50);
 
@@ -123,13 +122,12 @@ namespace QueryByExample_N18DCCN236
 
                 headerCell.Borders = DevExpress.XtraPrinting.BorderSide.All;
                 detailCell.Borders = DevExpress.XtraPrinting.BorderSide.All;
-
-                headerCell.Width = colWidth / colCount * (i + 1);
-                detailCell.Width = colWidth / colCount * (i + 1);
-                detailCell.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+                headerCell.TextFitMode = TextFitMode.ShrinkAndGrow;
+                detailCell.TextFitMode = TextFitMode.ShrinkAndGrow;
+                detailCell.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
 
                 detailCell.Borders = DevExpress.XtraPrinting.BorderSide.Bottom | DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Right;
-
+                
                 /*Place the cells into the corresponding tables*/
                 headerRow.Cells.Add(headerCell);
                 detailRow.Cells.Add(detailCell);

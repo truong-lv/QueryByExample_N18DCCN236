@@ -30,7 +30,7 @@ namespace QueryByExample_N18DCCN236
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::DevExpress.Web.Bootstrap.BootstrapTextBox txtTitle;
+        protected global::DevExpress.Web.ASPxTextBox txtTitle;
 
         /// <summary>
         /// ASPxLabel1 control.
@@ -51,22 +51,22 @@ namespace QueryByExample_N18DCCN236
         protected global::System.Web.UI.WebControls.TextBox txtQuery;
 
         /// <summary>
-        /// BootstrapButton1 control.
+        /// btnCreateQuery control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::DevExpress.Web.Bootstrap.BootstrapButton BootstrapButton1;
+        protected global::DevExpress.Web.ASPxButton btnCreateQuery;
 
         /// <summary>
-        /// BootstrapButton2 control.
+        /// btnReport control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::DevExpress.Web.Bootstrap.BootstrapButton BootstrapButton2;
+        protected global::DevExpress.Web.ASPxButton btnReport;
 
         /// <summary>
         /// GridView1 control.
@@ -87,13 +87,13 @@ namespace QueryByExample_N18DCCN236
         protected global::DevExpress.Web.ASPxLabel ASPxLabel3;
 
         /// <summary>
-        /// ASPxButton1 control.
+        /// btnClearnSelect control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::DevExpress.Web.Bootstrap.BootstrapButton ASPxButton1;
+        protected global::DevExpress.Web.ASPxButton btnClearnSelect;
 
         /// <summary>
         /// ASPxTreeView1 control.

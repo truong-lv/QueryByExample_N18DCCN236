@@ -7,11 +7,11 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="row">
-       <div style="display:flex; justify-content:center;padding:15px 0">
-           <dx:ASPxLabel ID="ASPxLabel2" runat="server" Font-Bold="True" Font-Size="Large" ForeColor="#3333CC" Text="TIÊU ĐỀ BÁO CÁO:" Theme="MetropolisBlue">
+       <div style="display:flex; justify-content:left;align-items:center;padding:15px 0">
+           <dx:ASPxLabel ID="ASPxLabel2" runat="server" Font-Bold="True" Font-Size="Medium" Text="TIÊU ĐỀ BÁO CÁO:" Theme="Office2010Black">
            </dx:ASPxLabel>
-        <dx:BootstrapTextBox ID="txtTitle" runat="server" >
-        </dx:BootstrapTextBox>
+           <dx:ASPxTextBox ID="txtTitle" runat="server" Width="30%" Font-Bold="True" Font-Names="Tahoma" Font-Size="Medium" Theme="Default">
+           </dx:ASPxTextBox>
         </div>
     </div>
     <div class="row">
@@ -22,10 +22,14 @@
                 <asp:TextBox ID="txtQuery" runat="server" TextMode="MultiLine" MaxLength="400" Height="200px" Width="100%" ></asp:TextBox>
             </div>
             <div class="row">
-                <dx:BootstrapButton ID="BootstrapButton1" runat="server" AutoPostBack="false" OnClick="BootstrapButton1_Click" Text="Tạo truy vấn">
-                </dx:BootstrapButton>
-                <dx:BootstrapButton ID="BootstrapButton2" runat="server" AutoPostBack="False" OnClick="BootstrapButton2_Click" Text="Tạo báo cáo">
-                </dx:BootstrapButton>
+                <dx:ASPxButton ID="btnCreateQuery" runat="server" Font-Names="Tahoma" OnClick="btnCreateQuery_Click" Text="Tạo truy vấn" Theme="MaterialCompact">
+                    <Image IconID="dashboards_newdatasource_svg_white_16x16">
+                    </Image>
+                </dx:ASPxButton>
+                <dx:ASPxButton ID="btnReport" runat="server" OnClick="btnReport_Click" Text="Tạo Báo Cáo" Theme="Office365">
+                    <Image IconID="reports_showprintingwarnings_svg_white_16x16">
+                    </Image>
+                </dx:ASPxButton>
                 <asp:GridView ID="GridView1" runat="server" BackColor="White"  BorderColor="#CCCCCC"  BorderWidth="1px" CellPadding="3" Width="100%">
                 <Columns>
                     <asp:TemplateField>
@@ -74,11 +78,14 @@
                      <dx:ASPxLabel ID="ASPxLabel3" runat="server" Text="Chọn Bảng:">
                      </dx:ASPxLabel>
 
-                     <dx:BootstrapButton ID="ASPxButton1" runat="server" Text="Bỏ tất cả" OnClick="ASPxButton1_Click">
-                     </dx:BootstrapButton>
+                     <dx:ASPxButton ID="btnClearnSelect" runat="server" OnClick="btnClearnSelect_Click" Text="Bỏ chọn tất cả" Theme="Office2003Olive">
+                         <Image IconID="diagramicons_del_svg_white_16x16">
+                         </Image>
+                     </dx:ASPxButton>
                  </div>
                  <hr />
                 <dx:ASPxTreeView ID="ASPxTreeView1" runat="server" ClientIDMode="AutoID" AllowCheckNodes="True" OnCheckedChanged="ASPxTreeView1_CheckedChanged">
+                    <SettingsLoadingPanel Delay="0" />
                 </dx:ASPxTreeView>
              </div>
         </div>

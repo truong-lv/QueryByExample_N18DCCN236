@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace QueryByExample_N18DCCN236 {
-    
-    
-    public partial class MyReport {
-        
+namespace QueryByExample_N18DCCN236
+{
+
+
+    public partial class MyReport
+    {
+
         /// <summary>
         /// ASPxWebDocumentViewer1 control.
         /// </summary>

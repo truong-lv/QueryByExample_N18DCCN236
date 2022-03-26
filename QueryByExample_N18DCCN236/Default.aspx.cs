@@ -81,33 +81,6 @@ namespace QueryByExample_N18DCCN236
             }
             conn.Close();
         }
-
-        protected void ListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //ListBox.Items.Clear();
-            //ListBoxColumn.Items.Clear();
-            //listColumnNameTemp2.Clear();
-            //listTableNameTemp2.Clear();
-            //foreach (BootstrapListEditItem item in ListTableName.Items)
-            //{
-            //    if (item.Selected)
-            //    {
-            //        GetColumnName(item.Text);
-
-            //    }
-            //}
-            //for (int i = 0; i < listTableName.Count; i++)
-            //{
-            //    GetColumnName(listTableName[i].ToString());
-
-            //}
-            //foreach (ListItem item in CheckBoxListColumn.Items)
-            //{
-            //    listColumnNameTemp2.Add(item.Text.ToString());
-            //    listTableNameTemp2.Add(item.Value.ToString());
-            //}
-        }
-
         
 
         protected void PerformActionOnNodesRecursive(TreeViewNodeCollection nodes, Action<TreeViewNode> action)
@@ -119,11 +92,6 @@ namespace QueryByExample_N18DCCN236
                     PerformActionOnNodesRecursive(node.Nodes, action);
             }
         }
-        protected void ASPxButton1_Click(object sender, EventArgs e)
-        {
-            PerformActionOnNodesRecursive(ASPxTreeView1.Nodes, delegate (TreeViewNode node) { node.Checked = false;});
-        }
-
         protected void ASPxTreeView1_CheckedChanged(object source, TreeViewNodeEventArgs e)
         {
             if (e.Node.Parent.Parent==null)
@@ -138,13 +106,14 @@ namespace QueryByExample_N18DCCN236
                 }
                 CheckBoxListTable_SelectedIndexChanged();
             }
-            else if(e.Node.Parent.Checked)
+            else
             {
+                if (!e.Node.Parent.Checked)
+                {
+                    e.Node.Parent.Checked = true;
+                    CheckBoxListTable_SelectedIndexChanged();
+                }
                 CheckBoxListColumn_SelectedIndexChanged();
-            }
-            else if(!e.Node.Parent.Checked)
-            {
-                e.Node.Checked = false;
             }
         }
         protected void CheckBoxListTable_SelectedIndexChanged()
@@ -213,7 +182,7 @@ namespace QueryByExample_N18DCCN236
 
         }
 
-        protected void BootstrapButton1_Click(object sender, EventArgs e)
+        protected void btnCreateQuery_Click(object sender, EventArgs e)
         {
             string mess = "";
 
@@ -278,15 +247,21 @@ namespace QueryByExample_N18DCCN236
             txtQuery.Text = mess;
         }
 
-        protected void BootstrapButton2_Click(object sender, EventArgs e)
+        protected void btnReport_Click(object sender, EventArgs e)
         {
-           
             String query = txtQuery.Text;
             String title = txtTitle.Text;
             Session["title"] = title;
             Session["query"] = query;
             Response.Redirect("MyReport.aspx");
             Server.Execute("MyReport.aspx");
+        }
+
+        protected void btnClearnSelect_Click(object sender, EventArgs e)
+        {
+            PerformActionOnNodesRecursive(ASPxTreeView1.Nodes, delegate (TreeViewNode node) { node.Checked = false; });
+            CheckBoxListTable_SelectedIndexChanged();
+            CheckBoxListColumn_SelectedIndexChanged();
         }
     }
 }

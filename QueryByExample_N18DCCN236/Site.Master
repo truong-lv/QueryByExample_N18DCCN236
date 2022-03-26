@@ -73,6 +73,6 @@
         </div>
     </form>
     <script type="text/javascript" src="./Scripts/myTools/SaveScroll.js" ></script>
-    <%--<script type="text/javascript" src="./Scripts/myTools/ClearnDXNotification.js" ></script>--%>
+    <script type="text/javascript" src="./Scripts/myTools/ClearnDXNotification.js" ></script>
 </body>
 </html>
