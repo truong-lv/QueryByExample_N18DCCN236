@@ -10,6 +10,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
+
 namespace QueryByExample_N18DCCN236
 {
     public partial class _Default : Page
@@ -194,6 +195,25 @@ namespace QueryByExample_N18DCCN236
 
         }
 
+        //Check valid SQL syntax
+        //public List<string> Parse(string sql)
+        //{
+        //    TSql100Parser parser = new TSql100Parser(false);
+        //    IScriptFragment fragment;
+        //    IList<ParseError> errors;
+        //    fragment = parser.Parse(new StringReader(sql), out errors);
+        //    if (errors != null && errors.Count > 0)
+        //    {
+        //        List<string> errorList = new List<string>();
+        //        foreach (var error in errors)
+        //        {
+        //            errorList.Add(error.Message);
+        //        }
+        //        return errorList;
+        //    }
+        //    return null;
+        //}
+
         protected void btnCreateQuery_Click(object sender, EventArgs e)
         {
             string mess = "";
@@ -201,7 +221,7 @@ namespace QueryByExample_N18DCCN236
             string tableName = string.Join(", ", listTableName);
             String columnName = "";
             mess = "SELECT ";
-            String dk = "";
+            List<String> listDk = new List<string>();
             for (int i = 0; i < GridView1.Rows.Count; i++)
             {
                 TextBox strBang = new TextBox();
@@ -213,7 +233,7 @@ namespace QueryByExample_N18DCCN236
                 {
                     strBang.Text = GridView1.Rows[i].Cells[4].Text;
                     strCot.Text = GridView1.Rows[i].Cells[3].Text;
-                    dk += " AND " + strBang.Text.ToString() + "." + strCot.Text.ToString() + dieuKien.Text.ToString();
+                    listDk.Add(strBang.Text.ToString() + "." + strCot.Text.ToString() + dieuKien.Text.ToString());
                 }
 
                 strBang.Text = GridView1.Rows[i].Cells[4].Text;
@@ -259,12 +279,18 @@ namespace QueryByExample_N18DCCN236
                     }
                 }
             }
+
+            String dk= string.Join(" AND ", listDk);
             if (!where.Equals(""))
             {
-                where = " WHERE " + where;
+                where = " WHERE " + where+ " AND "+ dk;
+            }
+            else if (!dk.Equals(""))
+            {
+                where = " WHERE " + dk;
             }
 
-            mess += " FROM " + tableName + where + dk;
+            mess += " FROM " + tableName + where;
             txtQuery.Text = mess;
         }
 
@@ -280,7 +306,9 @@ namespace QueryByExample_N18DCCN236
 
         protected void btnClearnSelect_Click(object sender, EventArgs e)
         {
-            PerformActionOnNodesRecursive(ASPxTreeView1.Nodes, delegate (TreeViewNode node) { node.Checked = false; });
+            PerformActionOnNodesRecursive(ASPxTreeView1.Nodes, delegate (TreeViewNode node) { 
+                node.Checked = false;
+            });
             CheckBoxListTable_SelectedIndexChanged();
             CheckBoxListColumn_SelectedIndexChanged();
         }

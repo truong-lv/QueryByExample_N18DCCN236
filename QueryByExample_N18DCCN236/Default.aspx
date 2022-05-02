@@ -46,16 +46,25 @@
                         <ItemTemplate>
                             <asp:DropDownList ID="DropDownList1" runat="server" ><%--OnSelectedIndexChanged="DropdownList1_Selected"--%>
                                 <asp:ListItem Text="Non_Selected" Value=""></asp:ListItem>
-                                <asp:ListItem Text="SORT ASC" Value="ASC"></asp:ListItem>
-                                <asp:ListItem Text="SORT DESC" Value="DESC"></asp:ListItem>
+                                <asp:ListItem Text="SUM" Value="SUM"></asp:ListItem>
                                 <asp:ListItem Text="COUNT" Value="COUNT"></asp:ListItem>
                                 <asp:ListItem Text="MIN" Value="MIN"></asp:ListItem>                                     
                                 <asp:ListItem Text="MAX" Value="MAX"></asp:ListItem>
                             </asp:DropDownList>
                         </ItemTemplate>
-                    </asp:TemplateField>           
-                   
-                    <asp:TemplateField HeaderText="Điều Kiện">
+                    </asp:TemplateField>       
+                    
+                   <asp:TemplateField HeaderText="Sort" >
+                        <ItemTemplate>
+                            <asp:DropDownList ID="DropDownList2" runat="server" ><%--OnSelectedIndexChanged="DropdownList1_Selected"--%>
+                                <asp:ListItem Text="Non_Selected" Value=""></asp:ListItem>
+                                <asp:ListItem Text="SORT ASC" Value="ASC"></asp:ListItem>
+                                <asp:ListItem Text="SORT DESC" Value="DESC"></asp:ListItem>
+                            </asp:DropDownList>
+                        </ItemTemplate>
+                    </asp:TemplateField>    
+                    
+                    <asp:TemplateField HeaderText="Criteria">
                         <ItemTemplate>
                             <asp:TextBox ID="TextBoxDieuKien" runat="server"></asp:TextBox>
                         </ItemTemplate>

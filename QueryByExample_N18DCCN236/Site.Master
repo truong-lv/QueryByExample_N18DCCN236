@@ -67,12 +67,13 @@
         <div class="navbar navbar-light" style="background-color: #e3f2fd;">
             <div class="container">
                 <footer >
-                <p>&copy; <%: DateTime.Now.Year %> - N18DCCN236_Lù Vĩnh Trường</p>
+                <span style="font-size:large">&copy; <%: DateTime.Now.Year %> - N18DCCN236_Lù Vĩnh Trường -
+                <a href="https://github.com/truong-lv">See more in my github</a></span>
             </footer>
                 </div>
         </div>
     </form>
     <script type="text/javascript" src="./Scripts/myTools/SaveScroll.js" ></script>
-    <script type="text/javascript" src="./Scripts/myTools/ClearnDXNotification.js" ></script>
+    <%--<script type="text/javascript" src="./Scripts/myTools/ClearnDXNotification.js" ></script>--%>
 </body>
 </html>
