@@ -30,8 +30,8 @@ namespace QueryByExample_N18DCCN236
                 this.GetTable();
                 
 
-                dt.Columns.Add("Tên Cột", Type.GetType("System.String"));
-                dt.Columns.Add("Tên Bảng", Type.GetType("System.String"));
+                dt.Columns.Add("Field", Type.GetType("System.String"));
+                dt.Columns.Add("Table", Type.GetType("System.String"));
             }
             
         }
@@ -122,8 +122,8 @@ namespace QueryByExample_N18DCCN236
                 if (e.Node.Checked)
                 {
                     dt.Rows.Add();
-                    dt.Rows[dt.Rows.Count-1]["Tên Cột"] = e.Node.Text.ToString();
-                    dt.Rows[dt.Rows.Count-1]["Tên Bảng"] = e.Node.Name.ToString();
+                    dt.Rows[dt.Rows.Count-1]["Field"] = e.Node.Text.ToString();
+                    dt.Rows[dt.Rows.Count-1]["Table"] = e.Node.Name.ToString();
 
                     GridView1.DataSource = dt;
                     GridView1.DataBind();
@@ -134,8 +134,8 @@ namespace QueryByExample_N18DCCN236
                    
                     for(int i = 0; i < dt.Rows.Count; i++)
                     {
-                        tenCot=dt.Rows[i]["Tên Cột"].ToString();
-                        tenBang=dt.Rows[i]["Tên Bảng"].ToString();
+                        tenCot=dt.Rows[i]["Field"].ToString();
+                        tenBang=dt.Rows[i]["Table"].ToString();
                         if (tenCot.Equals(e.Node.Text.ToString()) && tenBang.Equals(e.Node.Name.ToString()))
                         {
                             dt.Rows.RemoveAt(i);
@@ -219,28 +219,57 @@ namespace QueryByExample_N18DCCN236
             string mess = "";
 
             string tableName = string.Join(", ", listTableName);
+
+            int columnCount = 0;
+            if (GridView1.Rows.Count > 0)
+            {
+                columnCount = GridView1.Rows[0].Cells.Count;
+            }    
+            int fieldCell = columnCount - 2;
+            int tableCell = columnCount - 1;
             String columnName = "";
             mess = "SELECT ";
             List<String> listDk = new List<string>();
+            List<String> listDkOr = new List<string>();
+            List<String> listState = new List<string>();
+            List<String> listSort = new List<string>();
             for (int i = 0; i < GridView1.Rows.Count; i++)
             {
                 TextBox strBang = new TextBox();
                 TextBox strCot = new TextBox();
-                TextBox dieuKien = (TextBox)GridView1.Rows[i].Cells[2].FindControl("TextBoxDieuKien");
+                TextBox dieuKien = (TextBox)GridView1.Rows[i].Cells[3].FindControl("TextBoxDieuKien");
+                TextBox dieuKienOr = (TextBox)GridView1.Rows[i].Cells[4].FindControl("TextBoxOr");
                 CheckBox check = (CheckBox)GridView1.Rows[i].Cells[0].FindControl("ColumnChecked");
-                DropDownList state = (DropDownList)GridView1.Rows[i].Cells[1].FindControl("DropDownList1");
+                DropDownList state = (DropDownList)GridView1.Rows[i].Cells[1].FindControl("DropDownListState");
+                DropDownList sort = (DropDownList)GridView1.Rows[i].Cells[1].FindControl("DropDownListSort");
+
+                strBang.Text = GridView1.Rows[i].Cells[tableCell].Text;
+                strCot.Text = GridView1.Rows[i].Cells[fieldCell].Text;
+                //Lấy Đk AND
                 if (dieuKien.Text.ToString() != "")
                 {
-                    strBang.Text = GridView1.Rows[i].Cells[4].Text;
-                    strCot.Text = GridView1.Rows[i].Cells[3].Text;
                     listDk.Add(strBang.Text.ToString() + "." + strCot.Text.ToString() + dieuKien.Text.ToString());
+
+                }
+                //Lấy Đk OR
+                if (dieuKienOr.Text.ToString() != "")
+                {
+                    listDkOr.Add(strBang.Text.ToString() + "." + strCot.Text.ToString() + dieuKienOr.Text.ToString());
+                }
+                //Lấy state
+                if (state.SelectedValue.ToString()!="")
+                {
+                    listState.Add(state.SelectedValue+"("+strBang.Text.ToString() + "." + strCot.Text.ToString() + ")");
+                }
+                //Lấy sort
+                if (sort.SelectedValue.ToString() != "")
+                {
+                    listSort.Add(strBang.Text.ToString() + "." + strCot.Text.ToString() + sort.SelectedValue);
                 }
 
-                strBang.Text = GridView1.Rows[i].Cells[4].Text;
-                strCot.Text = GridView1.Rows[i].Cells[3].Text;
                 String dropdown = "";
 
-
+                //Lấy tên Field cần join
                 columnName = strBang.Text.ToString() + "." + strCot.Text.ToString();
 
                 
@@ -252,8 +281,8 @@ namespace QueryByExample_N18DCCN236
 
             }
             mess = mess.Substring(0, mess.Length - 2);
-            bool debug = (mess == "SELEC");
-            if(mess== "SELEC")
+            bool debug = (mess == "SELECT");
+            if(mess== "SELECT")
             {
                 txtQuery.Text = "";
                 return;
@@ -281,16 +310,29 @@ namespace QueryByExample_N18DCCN236
             }
 
             String dk= string.Join(" AND ", listDk);
+            String dkOr = string.Join(" AND ", listDkOr);
             if (!where.Equals(""))
             {
                 where = " WHERE " + where+ " AND "+ dk;
+                if (!dkOr.Equals(""))
+                {
+                    where += " OR (" + dkOr + ")";
+                }
             }
             else if (!dk.Equals(""))
             {
                 where = " WHERE " + dk;
+                if (!dkOr.Equals(""))
+                {
+                    where += " OR (" + dkOr + ")";
+                }
+            }
+            else if (!dkOr.Equals(""))
+            {
+                where = " WHERE " + dkOr;
             }
 
-            mess += " FROM " + tableName + where;
+            mess += "\n FROM " + tableName +"\n" +where;
             txtQuery.Text = mess;
         }
 
@@ -316,6 +358,11 @@ namespace QueryByExample_N18DCCN236
         protected void Checked_OnChanged(object sender, EventArgs e)
         {
             btnCreateQuery_Click(sender, e);
+        }
+
+        protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

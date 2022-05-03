@@ -17,7 +17,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="row">
-                <dx:ASPxLabel ID="ASPxLabel1" runat="server" Font-Bold="True" Text="Câu truy vấn:">
+                <dx:ASPxLabel ID="ASPxLabel1" runat="server" Font-Bold="False" Text="Câu truy vấn:">
                 </dx:ASPxLabel>
                 <asp:TextBox ID="txtQuery" runat="server" TextMode="MultiLine" MaxLength="400" Height="200px" Width="100%" ></asp:TextBox>
             </div>
@@ -32,11 +32,11 @@
                         </Image>
                     </dx:ASPxButton>
                 </div>
-                <asp:GridView ID="GridView1" runat="server" BackColor="White"  BorderColor="#CCCCCC"  BorderWidth="1px" CellPadding="3" Width="100%" ClientIDMode="AutoID">
+                <asp:GridView ID="GridView1" runat="server" BackColor="White"  BorderColor="#CCCCCC"  BorderWidth="1px" CellPadding="3" Width="100%" ClientIDMode="AutoID" OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
                 <Columns>
                     <asp:TemplateField>
                         <HeaderTemplate>
-                            <asp:CheckBox ID="checkAll" runat="server" AutoPostBack="true" Text="Chọn tất cả"/>
+                            <asp:Label ID="label" runat="server" Text="Show"/>
                         </HeaderTemplate>
                             <ItemTemplate>
                                 <asp:CheckBox ID="ColumnChecked" runat="server" OnCheckedChanged="Checked_OnChanged" AutoPostBack="true"/>
@@ -44,7 +44,7 @@
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="State" >
                         <ItemTemplate>
-                            <asp:DropDownList ID="DropDownList1" runat="server" ><%--OnSelectedIndexChanged="DropdownList1_Selected"--%>
+                            <asp:DropDownList ID="DropDownListState" runat="server" ><%--OnSelectedIndexChanged="DropdownList1_Selected"--%>
                                 <asp:ListItem Text="Non_Selected" Value=""></asp:ListItem>
                                 <asp:ListItem Text="SUM" Value="SUM"></asp:ListItem>
                                 <asp:ListItem Text="COUNT" Value="COUNT"></asp:ListItem>
@@ -56,7 +56,7 @@
                     
                    <asp:TemplateField HeaderText="Sort" >
                         <ItemTemplate>
-                            <asp:DropDownList ID="DropDownList2" runat="server" ><%--OnSelectedIndexChanged="DropdownList1_Selected"--%>
+                            <asp:DropDownList ID="DropDownListSort" runat="server" ><%--OnSelectedIndexChanged="DropdownList1_Selected"--%>
                                 <asp:ListItem Text="Non_Selected" Value=""></asp:ListItem>
                                 <asp:ListItem Text="SORT ASC" Value="ASC"></asp:ListItem>
                                 <asp:ListItem Text="SORT DESC" Value="DESC"></asp:ListItem>
@@ -65,13 +65,18 @@
                     </asp:TemplateField>    
                     
                     <asp:TemplateField HeaderText="Criteria">
-                        <ItemTemplate>
-                            <asp:TextBox ID="TextBoxDieuKien" runat="server"></asp:TextBox>
+                        <ItemTemplate >
+                            <asp:TextBox ID="TextBoxDieuKien" runat="server" Width="90%"></asp:TextBox>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Or">
+                        <ItemTemplate >
+                            <asp:TextBox ID="TextBoxOr" runat="server" Width="90%"></asp:TextBox>
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
                 <FooterStyle BackColor="White" ForeColor="#000066" HorizontalAlign="Left"/>
-                <HeaderStyle BackColor="#006699" Font-Bold="true" ForeColor="White"/>
+                <HeaderStyle BackColor="#006699" Font-Bold="true" ForeColor="White" Wrap="False" Height="30px"/>
                 <PagerStyle BackColor="White" ForeColor="#000066" HorizontalAlign="Left"/>
                 <RowStyle ForeColor="#000066"/>
                 <SelectedRowStyle BackColor="#006699" ForeColor="White" Font-Bold="true"/>
