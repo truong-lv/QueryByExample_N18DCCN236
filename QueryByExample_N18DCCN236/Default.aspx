@@ -8,7 +8,7 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="row">
        <div style="display:flex; justify-content:left;align-items:center;padding:15px 0">
-           <dx:ASPxLabel ID="ASPxLabel2" runat="server" Font-Bold="False" Font-Size="Medium" Text="TIÊU ĐỀ BÁO CÁO:" Theme="Office2010Black">
+           <dx:ASPxLabel ID="ASPxLabel2" runat="server" Font-Bold="True" Font-Size="Medium" Text="TIÊU ĐỀ BÁO CÁO:" Theme="Office2010Black">
            </dx:ASPxLabel>
            <dx:ASPxTextBox ID="txtTitle" runat="server" Width="30%" Font-Bold="True" Font-Names="Tahoma" Font-Size="Medium" Theme="Default">
            </dx:ASPxTextBox>
@@ -20,6 +20,8 @@
                 <dx:ASPxLabel ID="ASPxLabel1" runat="server" Font-Bold="False" Text="Câu truy vấn:">
                 </dx:ASPxLabel>
                 <asp:TextBox ID="txtQuery" runat="server" TextMode="MultiLine" MaxLength="400" Height="200px" Width="100%" ></asp:TextBox>
+                <dx:ASPxLabel ID="lbErorr" runat="server" Font-Bold="False" Font-Size="Small" Theme="Default" ForeColor="Red">
+           </dx:ASPxLabel>
             </div>
             <div class="row">
                 <div style="padding:5px;">
@@ -42,7 +44,7 @@
                                 <asp:CheckBox ID="ColumnChecked" runat="server" OnCheckedChanged="Checked_OnChanged" AutoPostBack="true"/>
                             </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="State" >
+                    <asp:TemplateField HeaderText="Total" >
                         <ItemTemplate>
                             <asp:DropDownList ID="DropDownListState" runat="server" ><%--OnSelectedIndexChanged="DropdownList1_Selected"--%>
                                 <asp:ListItem Text="Non_Selected" Value=""></asp:ListItem>

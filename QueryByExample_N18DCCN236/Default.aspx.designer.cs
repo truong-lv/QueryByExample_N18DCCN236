@@ -51,6 +51,15 @@ namespace QueryByExample_N18DCCN236
         protected global::System.Web.UI.WebControls.TextBox txtQuery;
 
         /// <summary>
+        /// lbErorr control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.ASPxLabel lbErorr;
+
+        /// <summary>
         /// btnCreateQuery control.
         /// </summary>
         /// <remarks>
