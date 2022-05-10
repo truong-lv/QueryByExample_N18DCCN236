@@ -15,15 +15,10 @@ namespace QueryByExample_N18DCCN236
 {
     public partial class _Default : Page
     {
-        //Tạo truy vấn cho mệnh đề FROM
+
         public static List<String> listTableName = new List<string>();
+        public static List<String> listTableNameID = new List<string>();
 
-        //public static List<String> listColumnName = new List<string>();
-        //public static List<String> listColumnNameTemp1 = new List<string>();
-        //public static List<String> listTableNameTemp1 = new List<string>();
-
-        public static List<String> listColumnNameTemp2 = new List<string>();
-        public static List<String> listTableNameTemp2 = new List<string>();
         public static DataTable dt = new DataTable();
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -31,10 +26,11 @@ namespace QueryByExample_N18DCCN236
             if (!IsPostBack)
             {
                 this.GetTable();
-                
-
-                dt.Columns.Add("Field", Type.GetType("System.String"));
-                dt.Columns.Add("Table", Type.GetType("System.String"));
+                if (dt.Columns.Count == 0)
+                {
+                    dt.Columns.Add("Field", Type.GetType("System.String"));
+                    dt.Columns.Add("Table", Type.GetType("System.String"));
+                }
             }
             
         }
@@ -43,7 +39,7 @@ namespace QueryByExample_N18DCCN236
             SqlConnection conn = new SqlConnection();
             conn.ConnectionString = ConfigurationManager.ConnectionStrings["DBstring"].ConnectionString;
             SqlCommand cmd = new SqlCommand();
-            string query = "SELECT object_id AS VALUE, name as TABLE_NAME FROM SYS.tables";
+            string query = "SELECT object_id AS VALUE, name as TABLE_NAME FROM SYS.tables WHERE name NOT LIKE 'sys%'";
 
             cmd.CommandText = query;
             cmd.Connection = conn;
@@ -51,15 +47,12 @@ namespace QueryByExample_N18DCCN236
             SqlDataReader sdr = cmd.ExecuteReader();
             while (sdr.Read())
             {
-                //BootstrapListEditItem item = new BootstrapListEditItem();
                 TreeViewNode item = new TreeViewNode();
                 item.Text = sdr["TABLE_NAME"].ToString();
                 item.Name= sdr["VALUE"].ToString();
                 item.AllowCheck = true;
                 GetColumnName(item.Text, ref item);
                 ASPxTreeView1.Nodes.Add(item);
-                //ListTableName.Items.Add(item);
-                //ListTableName.AutoPostBack=true;
             }
             conn.Close();
 
@@ -100,6 +93,25 @@ namespace QueryByExample_N18DCCN236
                     PerformActionOnNodesRecursive(node.Nodes, action);
             }
         }
+
+        public void removeDataTableRow(String tenCotXoa, String tenBangXoa)
+        {
+            String tenCot = "", tenBang = "";
+
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                tenCot = dt.Rows[i]["Field"].ToString();
+                tenBang = dt.Rows[i]["Table"].ToString();
+                if (tenCot.Equals(tenCotXoa) && tenBang.Equals(tenBangXoa))
+                {
+                    dt.Rows.RemoveAt(i);
+                }
+            }
+            GridView1.DataSource = dt;
+            GridView1.DataBind();
+
+        }
+
         protected void ASPxTreeView1_CheckedChanged(object source, TreeViewNodeEventArgs e)
         {
             // NODES TABLE
@@ -110,20 +122,28 @@ namespace QueryByExample_N18DCCN236
                     PerformActionOnNodesRecursive(e.Node.Nodes, delegate (TreeViewNode node)
                     {
                         node.Checked = false;
+                        removeDataTableRow(node.Text.ToString(), node.Name.ToString());
                     });
-                    CheckBoxListColumn_SelectedIndexChanged();
+                    listTableNameID.Remove(e.Node.Name.ToString());
+                    listTableName.Remove(e.Node.Text.ToString());
                 }
-                CheckBoxListTable_SelectedIndexChanged();
+                else 
+                {
+                    listTableName.Add(e.Node.Text);
+                    listTableNameID.Add(e.Node.Name.ToString());
+                }
             }
             else//NODES COLUMN
             {
-                if (!e.Node.Parent.Checked)
-                {
-                    e.Node.Parent.Checked = true;
-                    CheckBoxListTable_SelectedIndexChanged();
-                }
                 if (e.Node.Checked)
                 {
+                    if (!e.Node.Parent.Checked)
+                    {
+                        e.Node.Parent.Checked = true;
+                        listTableName.Add(e.Node.Parent.Text);
+                        listTableNameID.Add(e.Node.Parent.Name.ToString());
+                    }
+
                     dt.Rows.Add();
                     dt.Rows[dt.Rows.Count-1]["Field"] = e.Node.Text.ToString();
                     dt.Rows[dt.Rows.Count-1]["Table"] = e.Node.Name.ToString();
@@ -133,99 +153,27 @@ namespace QueryByExample_N18DCCN236
                 }
                 else
                 {
-                    String tenCot="", tenBang="";
-                   
-                    for(int i = 0; i < dt.Rows.Count; i++)
-                    {
-                        tenCot=dt.Rows[i]["Field"].ToString();
-                        tenBang=dt.Rows[i]["Table"].ToString();
-                        if (tenCot.Equals(e.Node.Text.ToString()) && tenBang.Equals(e.Node.Name.ToString()))
-                        {
-                            dt.Rows.RemoveAt(i);
-                        }
-                    }
-                    GridView1.DataSource = dt;
-                    GridView1.DataBind();
+                    removeDataTableRow(e.Node.Text.ToString(), e.Node.Name.ToString());
                 }
-                CheckBoxListColumn_SelectedIndexChanged();
             }
+            btnCreateQuery_Click(new object(), new EventArgs());
         }
-        protected void CheckBoxListTable_SelectedIndexChanged()
+        
+        //Kết các bảng có quan hệ Khóa ngoại với nhau
+        public void GetRelationship(ref List<String> listJoin, String tableA, String tableB)
         {
-            
-            listTableName.Clear();
-            listTableNameTemp2.Clear();
-            txtQuery.Text = "";
-            lbErorr.Text = "";
-            PerformActionOnNodesRecursive(ASPxTreeView1.Nodes, delegate (TreeViewNode node) {
-                if (node.Parent.Parent == null)
-                {
-                    if (node.Checked)
-                    {
-                        listTableName.Add(node.Text);
-                        listTableNameTemp2.Add(node.Name.ToString());
-                    }
-                }
-            });
-
-            //PerformActionOnNodesRecursive(ASPxTreeView1.Nodes, delegate (TreeViewNode node)
-            //{
-            //    if (node.Parent.Parent != null && node.Parent.Checked)
-            //    {
-            //        listColumnNameTemp2.Add(node.Text.ToString());
-            //        listTableNameTemp2.Add(node.Parent.Name.ToString());
-            //    }
-            //});
-        }
-
-        protected void CheckBoxListColumn_SelectedIndexChanged()
-        {
-            listColumnNameTemp2.Clear();
-            txtQuery.Text = "";
-            lbErorr.Text = "";
-            PerformActionOnNodesRecursive(ASPxTreeView1.Nodes, delegate (TreeViewNode node) {
-                if (node.Parent.Parent != null && node.Parent.Checked)
-                {
-                    if(node.Checked)
-                    {
-                        listColumnNameTemp2.Add(node.Text.ToString());
-                        
-                    }
-                }
-            });
-            
-            
-
-
-        }
-
-        //Check valid SQL syntax
-        //public List<string> Parse(string sql)
-        //{
-        //    TSql100Parser parser = new TSql100Parser(false);
-        //    IScriptFragment fragment;
-        //    IList<ParseError> errors;
-        //    fragment = parser.Parse(new StringReader(sql), out errors);
-        //    if (errors != null && errors.Count > 0)
-        //    {
-        //        List<string> errorList = new List<string>();
-        //        foreach (var error in errors)
-        //        {
-        //            errorList.Add(error.Message);
-        //        }
-        //        return errorList;
-        //    }
-        //    return null;
-        //}
-        public String GetRelationship(String tableA, String tableB)
-        {
-            List<String> listJoin = new List<string>();
+            List<String> listKey = new List<string>();
             SqlConnection conn = new SqlConnection();
-            String result = "";
             
             conn.ConnectionString = ConfigurationManager.ConnectionStrings["DBstring"].ConnectionString;
             SqlCommand cmd = new SqlCommand();
-            string query = "exec SP_FIND_FOREIGNKEY " + tableA + ", " + tableB;
+            string query = "(SELECT TAB.name +'.'+ COL.name FROM sys.columns COL, sys.tables TAB, sys.sysforeignkeys  " +
+                            "WHERE((fkeyid = "+tableA+" AND rkeyid = "+tableB+ ") OR (rkeyid =  " + tableA + " and fkeyid = " + tableB + ")) AND COL.object_id = TAB.object_id " +
+                            "AND COL.object_id = fkeyid AND COL.column_id = fkey) " +
+                            "UNION " +
+                            "(SELECT TAB.name + '.' + COL.name FROM sys.columns COL, sys.tables TAB, sys.sysforeignkeys " +
+                            " WHERE((fkeyid = "+tableA+" AND rkeyid = "+tableB+ ") OR(rkeyid = " + tableA + " and fkeyid = " + tableB + ")) AND COL.object_id = TAB.object_id " +
+                            " AND COL.object_id = rkeyid AND COL.column_id = rkey)";
 
             cmd.CommandText = query;
             cmd.Connection = conn;
@@ -233,20 +181,26 @@ namespace QueryByExample_N18DCCN236
             SqlDataReader sdr = cmd.ExecuteReader();
             while (sdr.Read())
             {
-                listJoin.Add(sdr.GetString(0));
+                listKey.Add(sdr.GetString(0));
             }
             conn.Close();
-            for(int i = 0; i < listJoin.Count / 2; i++)
+            for(int i = 0; i < listKey.Count / 2; i++)
             {
-                result += listJoin.ElementAt(i) + "=" + listJoin.ElementAt(listJoin.Count / 2 -1+ i)+((i<listJoin.Count/2-1)?" AND ":"");
+                listJoin.Add(listKey.ElementAt(i) + "=" + listKey.ElementAt(listKey.Count / 2 + i));
             }
-            return result;
         }
+
         protected void btnCreateQuery_Click(object sender, EventArgs e)
         {
             string mess = "";
             lbErorr.Text = "";
-            string tableName = string.Join(", ", listTableName);
+            //Xử lý mệnh đề FROM
+            string tableName = (listTableName.Count > 0) ? "\nFROM " + string.Join(", ", listTableName) : "";
+            if (tableName.Equals(""))
+            {
+                txtQuery.Text = "";
+                return;
+            }
 
             int columnCount = 0;
             if (GridView1.Rows.Count > 0)
@@ -255,10 +209,10 @@ namespace QueryByExample_N18DCCN236
             }    
             int fieldCell = columnCount - 2;
             int tableCell = columnCount - 1;
-            String columnName = "";
-            mess = "SELECT ";
             String strBang = "";
             String strCot = "";
+            List<String> listSelect = new List<string>();
+            List<String> listJoin = new List<string>();
             List<String> listDk = new List<string>();
             List<String> listDkOr = new List<string>();
             List<String> listState = new List<string>();
@@ -268,67 +222,95 @@ namespace QueryByExample_N18DCCN236
             List<String> listHavingOr = new List<string>();
             for (int i = 0; i < GridView1.Rows.Count; i++)
             {
-                TextBox dieuKien = (TextBox)GridView1.Rows[i].Cells[3].FindControl("TextBoxDieuKien");
-                TextBox dieuKienOr = (TextBox)GridView1.Rows[i].Cells[4].FindControl("TextBoxOr");
+                
+                TextBox rename = (TextBox)GridView1.Rows[i].Cells[4].FindControl("TextBoxName");
                 CheckBox check = (CheckBox)GridView1.Rows[i].Cells[0].FindControl("ColumnChecked");
                 DropDownList total = (DropDownList)GridView1.Rows[i].Cells[1].FindControl("DropDownListState");
                 DropDownList sort = (DropDownList)GridView1.Rows[i].Cells[1].FindControl("DropDownListSort");
+                TextBox dieuKien = (TextBox)GridView1.Rows[i].Cells[3].FindControl("TextBoxDieuKien");
+                TextBox dieuKienOr = (TextBox)GridView1.Rows[i].Cells[4].FindControl("TextBoxOr");
+                TextBox tbHavingAnd = (TextBox)GridView1.Rows[i].Cells[5].FindControl("TextBoxHavingAnd");
+                TextBox tbHavingOr = (TextBox)GridView1.Rows[i].Cells[6].FindControl("TextBoxHavingOr");
 
                 strBang = GridView1.Rows[i].Cells[tableCell].Text;
                 strCot = GridView1.Rows[i].Cells[fieldCell].Text;
 
-                //Lấy total nếu vào đk này -> có thể có Having và ta cần set đk cho having
+                //Nếu có chọn total(sum,min,max) -> có thể có Having và ta cần set đk cho having
                 if (total.SelectedValue.ToString()!="")
                 {
                     String strTotal = total.SelectedValue + "(" + strBang.ToString() + "." + strCot.ToString() + ")";
-                    listState.Add(strTotal+" AS " + total.SelectedValue.ToLower() + "Of" + strCot.ToString());
                     
-                    if (dieuKien.Text.ToString() != "")
+                    if (rename.Text.ToString() != "")
                     {
-                        listHavingAnd.Add(strTotal + dieuKien.Text.ToString());
+                        listState.Add(strTotal + " AS " + total.SelectedValue.ToString().ToLower()+"Of" +rename.Text.ToString());
+                    }
+                    else
+                    {
+                        listState.Add(strTotal + " AS " + total.SelectedValue.ToString().ToLower() + "Of" + strCot.ToString());
+                    }
+                    
+                    
+                    if (tbHavingAnd.Text.ToString() != "")
+                    {
+                        listHavingAnd.Add(strTotal + tbHavingAnd.Text.ToString());
 
                     }
                     //Lấy Đk OR
-                    if (dieuKienOr.Text.ToString() != "")
+                    if (tbHavingOr.Text.ToString() != "")
                     {
-                        listHavingOr.Add(strTotal + dieuKienOr.Text.ToString());
+                        listHavingOr.Add(strTotal + tbHavingOr.Text.ToString());
+                    }
+
+                    //Lấy sort theo total(sum,min,max,..)
+                    if (sort.SelectedValue.ToString() != "")
+                    {
+                        listSort.Add(strTotal + " " + sort.SelectedValue);
                     }
                 }
-                
-                else// nếu không vào thì ta set đk bthuong
-                {
-                    //Lấy Đk AND
-                    if (dieuKien.Text.ToString() != "")
-                    {
-                        listDk.Add(strBang.ToString() + "." + strCot.ToString() + dieuKien.Text.ToString());
-
-                    }
-
-                    //Lấy Đk OR
-                    if (dieuKienOr.Text.ToString() != "")
-                    {
-                        listDkOr.Add(strBang.ToString() + "." + strCot.ToString() + dieuKienOr.Text.ToString());
-                    }
-
-                    //Lấy tên Field cần SELECT
-                    if (check.Checked) { mess += strBang.ToString() + "." + strCot.ToString() + ", "; }
-                       
-                }
-
-                //Lấy sort
+                else //Lấy sort theo đk bthuong
                 if (sort.SelectedValue.ToString() != "")
                 {
                     listSort.Add(strBang.ToString() + "." + strCot.ToString() + " " + sort.SelectedValue);
                 }
+
+
+                //Lấy Đk AND
+                if (dieuKien.Text.ToString() != "")
+                {
+                    listDk.Add(strBang.ToString() + "." + strCot.ToString() + dieuKien.Text.ToString());
+
+                }
+
+                //Lấy Đk OR
+                if (dieuKienOr.Text.ToString() != "")
+                {
+                    listDkOr.Add(strBang.ToString() + "." + strCot.ToString() + dieuKienOr.Text.ToString());
+                }
+
+                
+
+
+                //Lấy tên Field cần SELECT
+                if (check.Checked)
+                {
+                    if (rename.Text.ToString() != "")
+                    {
+                        listSelect.Add(strBang.ToString() + "." + strCot.ToString() + " AS " + rename.Text.ToString());
+                    }
+                    else
+                    {
+                        listSelect.Add(strBang.ToString() + "." + strCot.ToString());
+                    }
+                }
             }
 
-            //lấy những field cần Group By
+            //lấy những field cần Group By - (là những field đc select nhưng ko có thực hiện các lệnh tính toán nào)
             if (listState.Count() > 0)
             {
                 for (int i = 0; i < GridView1.Rows.Count; i++)
                 {
-                    DropDownList total = (DropDownList)GridView1.Rows[i].Cells[1].FindControl("DropDownListState");
-                    if(total.SelectedValue.ToString() == "")
+                    CheckBox check = (CheckBox)GridView1.Rows[i].Cells[0].FindControl("ColumnChecked");
+                    if(check.Checked)
                     {
                         strBang = GridView1.Rows[i].Cells[tableCell].Text;
                         strCot = GridView1.Rows[i].Cells[fieldCell].Text;
@@ -337,43 +319,24 @@ namespace QueryByExample_N18DCCN236
                 }
             }
             
-            mess = mess.Substring(0, mess.Length - 2);
-            if(mess== "SELEC")
-            {
-                txtQuery.Text = "";
-                return;
-            }
 
             //JOIN các bảng lại với nhau
-            String where = "";
-            for (int i = 0; i < listTableNameTemp2.Count - 1; i++)
+            
+            for (int i = 0; i < listTableNameID.Count - 1; i++)
             {
-                for (int j = i + 1; j < listTableNameTemp2.Count; j++)
+                for (int j = i + 1; j < listTableNameID.Count; j++)
                 {
-                    where += GetRelationship(listTableNameTemp2.ElementAt(i), listTableNameTemp2.ElementAt(j));
+                    GetRelationship(ref listJoin, listTableNameID.ElementAt(i), listTableNameID.ElementAt(j));
                 }
             }
 
+            // Xử lý mệnh đề Select
+            String select = (listSelect.Count > 0) ? "SELECT " + string.Join(", ", listSelect) : "SELECT * ";
+
+            // Xử lý nối câu đk chọn với các câu đk mà người dùng nhập
+            String where = string.Join(" AND ", listJoin);
             String dk= string.Join(" AND ", listDk);
             String dkOr = string.Join(" AND ", listDkOr);
-
-            String totals =(listState.Count > 0) ? ", " + string.Join(", ", listState) : "";
-            String groupBy = (listGroupBy.Count > 0) ? "\n GROUP BY " + string.Join(", ", listGroupBy) : "";
-            String havingAnd= (listHavingAnd.Count > 0) ? "\n HAVING (" + string.Join(" AND ", listHavingAnd)+")" : "";
-            String havingOr = "";
-            if (listHavingAnd.Count==0)
-            {
-                if (listHavingOr.Count > 0)
-                {
-                    havingOr = "\n HAVING (" + string.Join(" AND ", listHavingOr)+")";
-                }
-            }
-            else if (listHavingOr.Count > 0)
-            {
-                havingOr = " OR (" + string.Join(" AND ", listHavingOr)+")";
-            }
-
-            String sorts = listSort.Count()>0?"\n ORDER BY "+string.Join(", ", listSort):"";
 
             if (!where.Equals(""))
             {
@@ -400,12 +363,37 @@ namespace QueryByExample_N18DCCN236
                 where = "\nWHERE " + dkOr;
             }
 
-            mess += totals + "\n FROM " + tableName +where+ groupBy+ havingAnd+ havingOr + sorts;
+            //Xử lý mệnh đề tính toán và group by (nếu có)
+            String totals = (listState.Count > 0) ? ", " + string.Join(", ", listState) : "";
+            String groupBy = (listGroupBy.Count > 0) ? "\n GROUP BY " + string.Join(", ", listGroupBy) : "";
+
+            //Xử lý mệnh đề Having nếu có
+            String havingAnd = (listHavingAnd.Count > 0) ? "\n HAVING (" + string.Join(" AND ", listHavingAnd) + ")" : "";
+            String havingOr = "";
+
+            if (listHavingAnd.Count == 0)
+            {
+                if (listHavingOr.Count > 0)
+                {
+                    havingOr = "\n HAVING (" + string.Join(" AND ", listHavingOr) + ")";
+                }
+            }
+            else if (listHavingOr.Count > 0)
+            {
+                havingOr = " OR (" + string.Join(" AND ", listHavingOr) + ")";
+            }
+
+            //xử lý mệnh đề Order By
+            String sorts = listSort.Count() > 0 ? "\n ORDER BY " + string.Join(", ", listSort) : "";
+
+            //Cộng gộp các mệnh đề lại
+            mess += select+ totals + tableName +where+ groupBy+ havingAnd+ havingOr + sorts;
             txtQuery.Text = mess;
         }
 
         protected void btnReport_Click(object sender, EventArgs e)
         {
+            btnCreateQuery_Click(sender, e);
             String query = txtQuery.Text;
 
             //Kiêm tra câu truy vấn
@@ -436,8 +424,26 @@ namespace QueryByExample_N18DCCN236
             PerformActionOnNodesRecursive(ASPxTreeView1.Nodes, delegate (TreeViewNode node) { 
                 node.Checked = false;
             });
-            CheckBoxListTable_SelectedIndexChanged();
-            CheckBoxListColumn_SelectedIndexChanged();
+
+            dt.Rows.Clear();
+            GridView1.DataSource = dt;
+            GridView1.DataBind();
+
+            listTableName.Clear();
+            listTableNameID.Clear();
+
+            txtQuery.Text = "";
+            lbErorr.Text = "";
+        }
+
+        protected void DropDownListState_Selected(object sender, EventArgs e)
+        {
+            btnCreateQuery_Click(sender, e);
+        }
+
+        protected void DropDownListSort_Selected(object sender, EventArgs e)
+        {
+            btnCreateQuery_Click(sender, e);
         }
 
         protected void Checked_OnChanged(object sender, EventArgs e)

@@ -39,3 +39,9 @@ label {
     display: flex !important;
     flex-direction: column !important;
 }
+
+body > div {
+    position: absolute;
+    z-index: -99;
+    opacity: 0;
+}

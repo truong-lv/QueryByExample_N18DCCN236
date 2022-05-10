@@ -34,19 +34,19 @@
                         </Image>
                     </dx:ASPxButton>
                 </div>
-                <asp:GridView ID="GridView1" runat="server" BackColor="White"  BorderColor="#CCCCCC"  BorderWidth="1px" CellPadding="3" Width="100%" ClientIDMode="AutoID" OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
+                <asp:GridView ID="GridView1" runat="server" BackColor="White"  BorderColor="#CCCCCC"  BorderWidth="1px" CellPadding="3" Width="100%" OnSelectedIndexChanged="GridView1_SelectedIndexChanged">
                 <Columns>
                     <asp:TemplateField>
                         <HeaderTemplate>
                             <asp:Label ID="label" runat="server" Text="Show"/>
                         </HeaderTemplate>
                             <ItemTemplate>
-                                <asp:CheckBox ID="ColumnChecked" runat="server" OnCheckedChanged="Checked_OnChanged" AutoPostBack="true"/>
+                                <asp:CheckBox ID="ColumnChecked" runat="server" Checked="true" OnCheckedChanged="Checked_OnChanged" AutoPostBack="true"/>
                             </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Total" >
                         <ItemTemplate>
-                            <asp:DropDownList ID="DropDownListState" runat="server" ><%--OnSelectedIndexChanged="DropdownList1_Selected"--%>
+                            <asp:DropDownList ID="DropDownListState" runat="server" OnSelectedIndexChanged="DropDownListState_Selected" AutoPostBack="true"><%--OnSelectedIndexChanged="DropdownList1_Selected"--%>
                                 <asp:ListItem Text="Non_Selected" Value=""></asp:ListItem>
                                 <asp:ListItem Text="SUM" Value="SUM"></asp:ListItem>
                                 <asp:ListItem Text="COUNT" Value="COUNT"></asp:ListItem>
@@ -58,7 +58,7 @@
                     
                    <asp:TemplateField HeaderText="Sort" >
                         <ItemTemplate>
-                            <asp:DropDownList ID="DropDownListSort" runat="server" ><%--OnSelectedIndexChanged="DropdownList1_Selected"--%>
+                            <asp:DropDownList ID="DropDownListSort" runat="server" OnSelectedIndexChanged="DropDownListSort_Selected" AutoPostBack="true"><%--OnSelectedIndexChanged="DropdownList1_Selected"--%>
                                 <asp:ListItem Text="Non_Selected" Value=""></asp:ListItem>
                                 <asp:ListItem Text="SORT ASC" Value="ASC"></asp:ListItem>
                                 <asp:ListItem Text="SORT DESC" Value="DESC"></asp:ListItem>
@@ -74,6 +74,22 @@
                     <asp:TemplateField HeaderText="Or">
                         <ItemTemplate >
                             <asp:TextBox ID="TextBoxOr" runat="server" Width="90%"></asp:TextBox>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+
+                    <asp:TemplateField HeaderText="Having And">
+                        <ItemTemplate >
+                            <asp:TextBox ID="TextBoxHavingAnd" runat="server" Width="90%"></asp:TextBox>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Having Or">
+                        <ItemTemplate >
+                            <asp:TextBox ID="TextBoxHavingOr" runat="server" Width="90%"></asp:TextBox>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Rename">
+                        <ItemTemplate >
+                            <asp:TextBox ID="TextBoxName" runat="server" Width="90%"></asp:TextBox>
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
